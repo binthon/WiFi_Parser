@@ -1,4 +1,5 @@
 import subprocess
+import platform
 from pathlib import Path
 from BeaconScanner import BaeconScan
 from NetworkDevice import TrafficAnalyzer
@@ -12,10 +13,16 @@ def capture_pcap(output_file='capture.pcapng', duration=30, interface='wlan0'):
     ])
 
 def main():
-    tsharkPath = 'E:\\Wireshark\\tshark.exe'
-    capture_pcap('auto_capture.pcapng', duration=15)
+    system = platform.system()
+    if system == "Windows":
+        tsharkPath = 'E:\\Wireshark\\tshark.exe'
+    else:
+        tsharkPath = 'tshark'
 
-    if not Path(tsharkPath).is_file():
+    if not Path('auto_capture.pcapng').is_file():
+        capture_pcap('auto_capture.pcapng', duration=15)
+
+    if system == "Windows" and not Path(tsharkPath).is_file():
         print("Nie znaleziono pliku TShark.")
         return
 
