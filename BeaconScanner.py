@@ -75,7 +75,6 @@ class BaeconScan:
             rsn_akm = rsn_akm.strip()
             vendor_oui = vendor_oui.strip().lower()
 
-
             if privacy in ["0", "false", "no"]:
                 cipher_type = "OPEN"
             elif not rsn_akm and not vendor_oui.startswith("00:50:f2"):
@@ -84,20 +83,28 @@ class BaeconScan:
                 cipher_type = "WPA1"
             elif rsn_akm:
                 akms = rsn_akm.split(',')
-                if "12" in akms:
-                    cipher_type = "WPA3-Enterprise (Suite-B 192)"
-                elif "9" in akms:
-                    cipher_type = "WPA3-Enterprise"
-                elif "8" in akms:
-                    if "2" in akms or "3" in akms:
+                if '18' in akms:
+                    cipher_type = "OWE"
+                elif '12' in akms:
+                    cipher_type = "WPA3-Enterprise-192bit"
+                elif '11' in akms:
+                    cipher_type = "WPA3-Enterprise-Suite-B"
+                elif '9' in akms:
+                    cipher_type = "WPA3-Personal + FT"
+                elif '8' in akms:
+                    if '2' in akms or '3' in akms:
                         cipher_type = "WPA2/WPA3-Transition"
                     else:
                         cipher_type = "WPA3-Personal"
-                elif "2" in akms:
-                    cipher_type = "WPA2-Enterprise"
-                elif "3" in akms:
+                elif '6' in akms:
+                    cipher_type = "WPA3-Personal (PSK-SHA256)"
+                elif '5' in akms:
+                    cipher_type = "WPA3-Enterprise"
+                elif '4' in akms or '3' in akms:
+                    cipher_type = "WPA2-Enterprise + FT"
+                elif '2' in akms:
                     cipher_type = "WPA2-Personal"
-                elif "1" in akms:
+                elif '1' in akms:
                     cipher_type = "WPA-Enterprise"
                 else:
                     cipher_type = f"Encrypted (Unknown AKM: {rsn_akm})"
@@ -105,5 +112,3 @@ class BaeconScan:
                 cipher_type = "Encrypted (no RSN/Vendor Info)"
 
             self.networks[bssid]["typ_szyfrowania"] = cipher_type
-
-
